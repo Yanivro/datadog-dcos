@@ -12,7 +12,6 @@ do
  sleep 2
 done
 
-
 ## Set up the Datadog deb repo on your system and import Datadog's apt key ##
 sudo sh -c "echo 'deb https://apt.datadoghq.com/ stable main' > /etc/apt/sources.list.d/datadog.list"
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C7A7DA52

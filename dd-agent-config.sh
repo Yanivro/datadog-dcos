@@ -3,14 +3,12 @@
 DD_API_KEY=$1
 ENV_TAG=$2
 
-while ( ! (find /var/log/azure/Microsoft.OSTCExtensions.LinuxDiagnostic/*/extension.log | xargs grep "Start mdsd"));
-do
-  sleep 5
-done
-
 ## Set up apt so that it can download through https ##
-sudo apt-get -y update
-sudo apt-get -y install apt-transport-https
+until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
+do
+ echo "Try again"
+ sleep 2
+done
 
 ## Set up the Datadog deb repo on your system and import Datadog's apt key ##
 sudo sh -c "echo 'deb https://apt.datadoghq.com/ stable main' > /etc/apt/sources.list.d/datadog.list"
