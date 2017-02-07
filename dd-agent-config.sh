@@ -22,6 +22,9 @@ sudo apt-get -y install datadog-agent
 ## Copy the example config into place and plug in your API key () ##
 sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/dd-agent/datadog.conf.example > /etc/dd-agent/datadog.conf"
 
+##add dd-agent user to docker ##
+sudo usermod -a -G docker dd-agent
+
 ## Create yaml files from examples
 sudo cp /etc/dd-agent/conf.d/docker_daemon.yaml.example /etc/dd-agent/conf.d/docker_daemon.yaml
 sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
@@ -30,7 +33,7 @@ sudo cp /etc/dd-agent/conf.d/mesos_slave.yaml.example /etc/dd-agent/conf.d/mesos
 
 ## Edit Yaml files ##
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
-sudo sed -i "s/# docker_root:/docker_root/g" /etc/dd-agent/conf.d/docker_daemon.yaml
+# sudo sed -i "s/# docker_root:/docker_root:/g" /etc/dd-agent/conf.d/docker_daemon.yaml
 sudo sed -i 's/# collect_labels_as_tags:/collect_labels_as_tags:/g' /etc/dd-agent/conf.d/docker_daemon.yaml
 sudo sed -i 's/"com.docker.compose.service", "com.docker.compose.project"/"customer_name"/g' /etc/dd-agent/conf.d/docker_daemon.yaml
 sudo sed -i "s/localhost/$HOST_IP/g" /etc/dd-agent/conf.d/mesos_slave.yaml
