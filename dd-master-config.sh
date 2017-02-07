@@ -2,6 +2,8 @@
 
 DD_API_KEY=$1
 ENV_TAG=$2
+DCOS_CRT=$3
+DCOS_KEY=$4
 
 while ( ! (find /var/log/azure/Microsoft.OSTCExtensions.LinuxDiagnostic/*/extension.log | xargs grep "Start mdsd"));
 do
@@ -40,7 +42,11 @@ sudo sed -i "s/server:port/leader.mesos:8080/g" /etc/dd-agent/conf.d/marathon.ya
 sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://marathon-lb-default.marathon.mesos:9090/haproxy?stats#g" /etc/dd-agent/conf.d/haproxy.yaml.example
 
 
-
-
 ## Start the Agent ##
  sudo /etc/init.d/datadog-agent start
+
+## Add our SSL certificates ##
+sudo echo "$DCOS_KEY" > /opt/mesosphere/packages/adminrouter--cee9a2abb16c28d1ca6c74af1aff6bc4aac3f134/nginx/conf/common/snakeoil.key
+sudo echo "$DCOS_CRT" > /opt/mesosphere/packages/adminrouter--cee9a2abb16c28d1ca6c74af1aff6bc4aac3f134/nginx/conf/common/snakeoil.crt
+
+sudo systemctl restart dcos-adminrouter.service
