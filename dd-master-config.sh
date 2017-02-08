@@ -5,6 +5,7 @@ ENV_TAG=$2
 DCOS_CRT=$3
 DCOS_KEY=$4
 
+sleep 300
 ## Set up apt so that it can download through https ##
 until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
 do
