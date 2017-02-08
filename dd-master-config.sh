@@ -44,7 +44,11 @@ sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://marathon-lb-def
 
 ## Add our SSL certificates ##
 cd /opt/mesosphere/packages/adminrouter-*/nginx/conf/common/
-sudo echo $DCOS_CRT > snakeoil.crt
-sudo echo $DCOS_KEY > snakeoil.key
+sudo echo $DCOS_CRT > snakeoil1.crt
+sudo echo $DCOS_KEY > snakeoil1.key
+sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.crt > snakeoil.crt
+sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.key > snakeoil.key
 
 sudo systemctl restart dcos-adminrouter.service
+
+sh -c 'until ping -c1 leader.mesos;do echo waiting for leader.mesos;sleep 15;done;echo leader.mesos up'
