@@ -6,6 +6,8 @@ DCOS_CRT=$3
 DCOS_KEY=$4
 
 sleep 300
+sh -c 'until ping -c1 leader.mesos;do echo waiting for leader.mesos;sleep 15;done;echo leader.mesos up'
+
 ## Set up apt so that it can download through https ##
 until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
 do
@@ -51,5 +53,3 @@ sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.crt > snakeoil.crt
 sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.key > snakeoil.key
 
 sudo systemctl restart dcos-adminrouter.service
-
-sh -c 'until ping -c1 leader.mesos;do echo waiting for leader.mesos;sleep 15;done;echo leader.mesos up'
