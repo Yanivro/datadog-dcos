@@ -30,7 +30,7 @@ sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/dd-agent/datadog.conf.
 sudo cp /etc/dd-agent/conf.d/mesos_master.yaml.example /etc/dd-agent/conf.d/mesos_master.yaml
 sudo cp /etc/dd-agent/conf.d/zk.yaml.example /etc/dd-agent/conf.d/zk.yaml
 sudo cp /etc/dd-agent/conf.d/marathon.yaml.example /etc/dd-agent/conf.d/marathon.yaml
-sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
+#sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
 
 ## Edit Yaml files ##
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
@@ -39,7 +39,6 @@ sudo sed -i "s/localhost/leader.mesos/g" /etc/dd-agent/conf.d/mesos_master.yaml
 sudo sed -i "s/# tags: mytag, env:prod, role:database/ tags: env:$ENV_TAG, role:mesos-master/g" /etc/dd-agent/datadog.conf
 sudo sed -i 's/# - url: "https:/- url: "http:/g' /etc/dd-agent/conf.d/marathon.yaml
 sudo sed -i "s/server:port/leader.mesos:8080/g" /etc/dd-agent/conf.d/marathon.yaml
-sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://marathon-lb-default.marathon.mesos:9090/haproxy?stats#g" /etc/dd-agent/conf.d/haproxy.yaml
 
 
 ## Start the Agent ##
