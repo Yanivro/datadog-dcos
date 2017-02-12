@@ -46,10 +46,10 @@ sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://marathon-lb-def
  sudo /etc/init.d/datadog-agent start
 
 ## Add our SSL certificates ##
-# cd /opt/mesosphere/packages/adminrouter-*/nginx/conf/common/
-# sudo echo $DCOS_CRT > snakeoil1.crt
-# sudo echo $DCOS_KEY > snakeoil1.key
-# sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.crt > snakeoil.crt
-# sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.key > snakeoil.key
+cd /opt/mesosphere/packages/adminrouter-*/nginx/conf/common/
+sudo echo $DCOS_CRT > snakeoil1.crt
+sudo echo $DCOS_KEY > snakeoil1.key
+sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.crt > snakeoil.crt
+sudo awk '{gsub(/\\n/,"\n")}1' snakeoil1.key > snakeoil.key
 
-# sudo systemctl restart dcos-adminrouter.service
+sudo systemctl restart dcos-adminrouter.service
