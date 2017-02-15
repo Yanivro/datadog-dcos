@@ -4,7 +4,6 @@ DD_API_KEY=$1
 ENV_TAG=$2
 HOST_IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 
-sleep 300
 ## Set up apt so that it can download through https ##
 until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
 do
