@@ -16,8 +16,12 @@ sudo sh -c "echo 'deb https://apt.datadoghq.com/ stable main' > /etc/apt/sources
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C7A7DA52
 
 ## Update your local apt repo and install the Agent ##
-sudo apt-get -y update
-sudo apt-get -y install datadog-agent
+
+until sudo apt-get -y update && sudo apt-get -y install datadog-agent
+do
+ echo "Try again"
+ sleep 2
+done
 
 ## Copy the example config into place and plug in your API key () ##
 sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/dd-agent/datadog.conf.example > /etc/dd-agent/datadog.conf"
