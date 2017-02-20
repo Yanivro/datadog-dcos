@@ -5,7 +5,7 @@ ENV_TAG=$2
 DCOS_CRT=$3
 DCOS_KEY=$4
 
-sleep 300
+sleep 120
 sh -c 'until ping -c1 leader.mesos;do echo waiting for leader.mesos;sleep 15;done;echo leader.mesos up'
 
 ## Set up apt so that it can download through https ##
