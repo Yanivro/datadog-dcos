@@ -52,7 +52,7 @@ sudo /etc/init.d/datadog-agent start
 until sudo systemctl status dcos-mesos-slave
 do
  echo "Try again"
- sleep 2
+ sleep 10
 done
 sudo systemctl stop dcos-mesos-slave
 sudo rm -f /var/lib/mesos/slave/meta/slaves/latest
