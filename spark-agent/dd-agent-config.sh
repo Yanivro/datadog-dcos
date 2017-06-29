@@ -54,6 +54,8 @@ do
  echo "Try again"
  sleep 10
 done
+sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
+
 sudo systemctl stop dcos-mesos-slave
 sudo rm -f /var/lib/mesos/slave/meta/slaves/latest
 sudo systemctl start dcos-mesos-slave
