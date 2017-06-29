@@ -5,6 +5,8 @@ ENV_TAG=$2
 HOST_IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 
 ## Set up apt so that it can download through https ##
+sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
+
 until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
 do
  echo "Try again"
@@ -46,12 +48,13 @@ sudo sed -i "s/# tags: mytag, env:prod, role:database/ tags: env:$ENV_TAG, role:
 sudo /etc/init.d/datadog-agent start
 
 ## Add attributes to slaves
-sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
-until sudo systemctl stop dcos-mesos-slave
+
+until sudo systemctl status dcos-mesos-slave
 do
  echo "Try again"
  sleep 2
 done
-
+sudo systemctl stop dcos-mesos-slave
+sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
 sudo rm -f /var/lib/mesos/slave/meta/slaves/latest
 sudo systemctl start dcos-mesos-slave
