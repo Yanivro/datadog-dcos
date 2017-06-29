@@ -55,6 +55,5 @@ do
  sleep 2
 done
 sudo systemctl stop dcos-mesos-slave
-sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
 sudo rm -f /var/lib/mesos/slave/meta/slaves/latest
 sudo systemctl start dcos-mesos-slave
