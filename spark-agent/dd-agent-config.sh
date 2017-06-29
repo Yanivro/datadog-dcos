@@ -47,6 +47,11 @@ sudo /etc/init.d/datadog-agent start
 
 ## Add attributes to slaves
 sudo echo "MESOS_ATTRIBUTES=AGENT_TYPE:SPARK;" | sudo tee /var/lib/dcos/mesos-slave-common
-sudo systemctl stop dcos-mesos-slave
+until sudo systemctl stop dcos-mesos-slave
+do
+ echo "Try again"
+ sleep 2
+done
+
 sudo rm -f /var/lib/mesos/slave/meta/slaves/latest
 sudo systemctl start dcos-mesos-slave
