@@ -40,6 +40,10 @@ sudo sed -i "s/# tags: mytag, env:prod, role:database/ tags: env:$ENV_TAG, role:
 sudo sed -i 's/# - url: "https:/- url: "http:/g' /etc/dd-agent/conf.d/marathon.yaml
 sudo sed -i "s/server:port/leader.mesos:8080/g" /etc/dd-agent/conf.d/marathon.yaml
 
+## Enable local traffic to agent ##
+sudo sed -i.back 's,# non_local_traffic: no,non_local_traffic: true,' /etc/dd-agent/datadog.conf
+
+
 
 ## Start the Agent ##
  sudo /etc/init.d/datadog-agent start

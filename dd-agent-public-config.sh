@@ -42,5 +42,10 @@ sudo sed -i 's/"com.docker.compose.service", "com.docker.compose.project"/"custo
 sudo sed -i "s/localhost/$HOST_IP/g" /etc/dd-agent/conf.d/mesos_slave.yaml
 sudo sed -i "s/# tags: mytag, env:prod, role:database/ tags: env:$ENV_TAG, role:mesos-slave/g" /etc/dd-agent/datadog.conf
 sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://localhost:9090/haproxy?stats#g" /etc/dd-agent/conf.d/haproxy.yaml
+
+## Enable local traffic to agent ##
+sudo sed -i.back 's,# non_local_traffic: no,non_local_traffic: true,' /etc/dd-agent/datadog.conf
+
+
 ## Start the Agent ##
  sudo /etc/init.d/datadog-agent start
