@@ -36,7 +36,7 @@ sudo cp /etc/datadog-agent/conf.d/marathon.d/conf.yaml.example /etc/datadog-agen
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
 sudo sed -i "s/- host: localhost/- host: leader.mesos/g" /etc/datadog-agent/conf.d/zk.d/conf.yaml
 sudo sed -i "s/localhost/leader.mesos/g" /etc/datadog-agent/conf.d/mesos_master.d/conf.yaml
-sudo sed -i "s/# tags:/ tags:/g" /etc/datadog-agent/datadog.yaml
+sudo sed -i "s/# tags:/tags:/g" /etc/datadog-agent/datadog.yaml
 sudo sed -i "s/#   - env:prod/    - env:$ENV_TAG/g" /etc/datadog-agent/datadog.yaml
 sudo sed -i "s/#   - role:database/   - role:mesos-master/g" /etc/datadog-agent/datadog.yaml
 sudo sed -i 's/# - url: "https:/- url: "http:/g' /etc/datadog-agent/conf.d/marathon.d/conf.yaml
