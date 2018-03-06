@@ -27,18 +27,18 @@ sudo apt-get -y install datadog-agent
 sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
 
 ## Create yaml files from examples
-sudo cp /etc/dd-agent/conf.d/mesos_master.yaml.example /etc/dd-agent/conf.d/mesos_master.yaml
-sudo cp /etc/dd-agent/conf.d/zk.yaml.example /etc/dd-agent/conf.d/zk.yaml
-sudo cp /etc/dd-agent/conf.d/marathon.yaml.example /etc/dd-agent/conf.d/marathon.yaml
-#sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
+sudo cp /etc/datadog-agent/conf.d/mesos_master.d/conf.yaml.example /etc/datadog-agent/conf.d/mesos_master.d/conf.yaml
+sudo cp /etc/datadog-agent/conf.d/zk.d/conf.yaml.example /etc/datadog-agent/conf.d/zk.d/conf.yaml
+sudo cp /etc/datadog-agent/conf.d/marathon.d/conf.yaml.example /etc/datadog-agent/conf.d/marathon.d/conf.yaml
+#sudo cp /etc/datadog-agent/conf.d/haproxy.d/conf.yaml.example /etc/datadog-agent/conf.d/haproxy.d/conf.yaml
 
 ## Edit Yaml files ##
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
-sudo sed -i "s/- host: localhost/- host: leader.mesos/g" /etc/dd-agent/conf.d/zk.yaml
-sudo sed -i "s/localhost/leader.mesos/g" /etc/dd-agent/conf.d/mesos_master.yaml
+sudo sed -i "s/- host: localhost/- host: leader.mesos/g" /etc/datadog-agent/conf.d/zk.d/conf.yaml
+sudo sed -i "s/localhost/leader.mesos/g" /etc/datadog-agent/conf.d/mesos_master.d/conf.yaml
 sudo sed -i "s/# tags:/ tags: env:$ENV_TAG, role:mesos-master/g" /etc/datadog-agent/datadog.yaml
-sudo sed -i 's/# - url: "https:/- url: "http:/g' /etc/dd-agent/conf.d/marathon.yaml
-sudo sed -i "s/server:port/leader.mesos:8080/g" /etc/dd-agent/conf.d/marathon.yaml
+sudo sed -i 's/# - url: "https:/- url: "http:/g' /etc/datadog-agent/conf.d/marathon.d/conf.yaml
+sudo sed -i "s/server:port/leader.mesos:8080/g" /etc/datadog-agent/conf.d/marathon.d/conf.yaml
 
 ## Enable local traffic to agent ##
 sudo sed -i.back 's,# dogstatsd_non_local_traffic: no,dogstatsd_non_local_traffic: true,' /etc/datadog-agent/datadog.yaml
