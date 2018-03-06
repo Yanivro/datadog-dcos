@@ -40,7 +40,10 @@ sudo cp /etc/datadog-agent/conf.d/docker.d/conf.yaml.example /etc/datadog-agent/
 sudo sed -i 's/# collect_labels_as_tags:/collect_labels_as_tags:/g' /etc/datadog-agent/conf.d/docker.d/conf.yaml
 sudo sed -i 's/"com.docker.compose.service", "com.docker.compose.project"/"customer_name"/g' /etc/datadog-agent/conf.d/docker.d/conf.yaml
 sudo sed -i "s/localhost/$HOST_IP/g" /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml
-sudo sed -i "s/# tags:/ tags: env:$ENV_TAG, role:mesos-slave/g" /etc/datadog-agent/datadog.yaml
+sudo sed -i "s/# tags:/ tags:/g" /etc/datadog-agent/datadog.yaml
+sudo sed -i "s/# tags:/ tags:/g" /etc/datadog-agent/datadog.yaml
+sudo sed -i "s/#   - env:prod/    - env:$ENV_TAG/g" /etc/datadog-agent/datadog.yaml
+sudo sed -i "s/#   - role:database/   - role:mesos-slave/g" /etc/datadog-agent/datadog.yaml
 
 ## Enable local traffic to agent ##
 sudo sed -i.back 's,# dogstatsd_non_local_traffic: no,dogstatsd_non_local_traffic: true,' /etc/datadog-agent/datadog.yaml
