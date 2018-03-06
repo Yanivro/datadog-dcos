@@ -29,19 +29,18 @@ sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/datadog-agent/datadog.
 sudo usermod -a -G docker dd-agent
 
 ## Create yaml files from examples
-sudo cp /etc/dd-agent/conf.d/docker_daemon.yaml.example /etc/dd-agent/conf.d/docker_daemon.yaml
-sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
-sudo cp /etc/dd-agent/conf.d/mesos_slave.yaml.example /etc/dd-agent/conf.d/mesos_slave.yaml
-
+sudo cp /etc/datadog-agent/conf.d/docker.d/conf.yaml.example  /etc/datadog-agent/conf.d/docker.d/conf.yaml
+sudo cp /etc/datadog-agent/conf.d/haproxy.d/conf.yaml.example  /etc/datadog-agent/conf.d/haproxy.d/conf.yaml
+sudo cp /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml.example /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml
 
 ## Edit Yaml files ##
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
 # sudo sed -i "s/# docker_root:/docker_root:/g" /etc/dd-agent/conf.d/docker_daemon.yaml
-sudo sed -i 's/# collect_labels_as_tags:/collect_labels_as_tags:/g' /etc/dd-agent/conf.d/docker_daemon.yaml
-sudo sed -i 's/"com.docker.compose.service", "com.docker.compose.project"/"customer_name"/g' /etc/dd-agent/conf.d/docker_daemon.yaml
-sudo sed -i "s/localhost/$HOST_IP/g" /etc/dd-agent/conf.d/mesos_slave.yaml
+sudo sed -i 's/# collect_labels_as_tags:/collect_labels_as_tags:/g' /etc/datadog-agent/conf.d/docker.d/conf.yaml
+sudo sed -i 's/"com.docker.compose.service", "com.docker.compose.project"/"customer_name"/g' /etc/datadog-agent/conf.d/docker.d/conf.yaml
+sudo sed -i "s/localhost/$HOST_IP/g" /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml
 sudo sed -i "s/# tags:/ tags: env:$ENV_TAG, role:mesos-slave/g" /etc/datadog-agent/datadog.yaml
-sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://localhost:9090/haproxy?stats#g" /etc/dd-agent/conf.d/haproxy.yaml
+sudo sed -i "s#- url: http://localhost/admin?stats#- url: http://localhost:9090/haproxy?stats#g" /etc/datadog-agent/conf.d/haproxy.d/conf.yaml
 
 ## Enable local traffic to agent ##
 sudo sed -i.back 's,# dogstatsd_non_local_traffic: no,dogstatsd_non_local_traffic: true,' /etc/datadog-agent/datadog.yaml
