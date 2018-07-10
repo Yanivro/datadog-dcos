@@ -2,27 +2,11 @@
 
 DD_API_KEY=$1
 ENV_TAG=$2
-HOST_IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-
-## Set up apt so that it can download through https ##
-until sudo apt-get -y update && sudo apt-get -y install apt-transport-https
-do
- echo "Try again"
- sleep 2
-done
-
-## Set up the Datadog deb repo on your system and import Datadog's apt key ##
-sudo sh -c "echo 'deb https://apt.datadoghq.com/ stable 6' > /etc/apt/sources.list.d/datadog.list"
-sudo apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE
-
-## Update your local apt repo and install the Agent ##
-
-until sudo apt-get -y update && sudo apt-get -y install datadog-agent
-do
- echo "Try again"
- sleep 2
-done
-
+HOST_IP=$(ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ {print $1}' | cut -d"/" -f1)
+echo "Running on: "$HOST_IP
+echo "Updating datadog.conf on $(hostname -f)"
+#Upgrade datadog agent
+DD_UPGRADE=true bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
 ## Copy the example config into place and plug in your API key () ##
 sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/datadog-agent/datadog.yaml.example > /etc/datadog-agent/datadog.yaml"
 
@@ -30,9 +14,10 @@ sudo sh -c "sed 's/api_key:.*/api_key: $DD_API_KEY/' /etc/datadog-agent/datadog.
 sudo usermod -a -G docker dd-agent
 
 ## Create yaml files from examples
-sudo cp /etc/datadog-agent/conf.d/docker.d/conf.yaml.example /etc/datadog-agent/conf.d/docker.d/conf.yaml
-# sudo cp /etc/dd-agent/conf.d/haproxy.yaml.example /etc/dd-agent/conf.d/haproxy.yaml
- sudo cp /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml.example /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml
+sudo cp /etc/datadog-agent/conf.d/docker.d/conf.yaml.example /etc/datadog-agent/conf.d/docker.d/conf.yaml -p
+
+sudo cp /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml.example /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml -p
+
 
 ## Edit Yaml files ##
 # sudo  sed -i "s/# hostname: mymachine.mydomain/hostname:$(hostname)/g" /etc/dd-agent/datadog.conf
@@ -47,5 +32,18 @@ sudo sed -i "s/#   - role:database/   - role:mesos-slave/g" /etc/datadog-agent/d
 ## Enable local traffic to agent ##
 sudo sed -i.back 's,# dogstatsd_non_local_traffic: no,dogstatsd_non_local_traffic: true,' /etc/datadog-agent/datadog.yaml
 
+#Check if public or private
+ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ {print $1}' | cut -d"/" -f1 | grep "^10\.0\.*"
+if [ $? -eq 0 ]; then
+    sudo cp /etc/datadog-agent/conf.d/marathon.d/conf.yaml.example /etc/datadog-agent/conf.d/marathon.d/conf.yaml -p
+    sudo sed -i "s,https://server:port,http://leader.mesos/marathon/v2,g" /etc/datadog-agent/conf.d/marathon.d/conf.yaml
+    sudo sed -i 's/# - url/url/g' /etc/datadog-agent/conf.d/marathon.d/conf.yaml
+    sudo cp /etc/datadog-agent/conf.d/haproxy.d/conf.yaml.example /etc/datadog-agent/conf.d/haproxy.d/conf.yaml -p
+    sudo sed -i "s,http://localhost/admin?stats,http://localhost:9090/haproxy?stats,g" /etc/datadog-agent/conf.d/haproxy.d/conf.yaml
+    sudo cp /etc/datadog-agent/conf.d/kong.d/conf.yaml.example /etc/datadog-agent/conf.d/kong.d/conf.yaml -p
+    sudo sed -i "s,http://localhost:8001/status,http://localhost:31002/status,g" /etc/datadog-agent/conf.d/kong.d/conf.yaml
+    sudo cp /etc/datadog-agent/conf.d/nginx.d/conf.yaml.example /etc/datadog-agent/conf.d/nginx.d/conf.yaml -p
+    sudo sed -i "s,http://localhost/nginx_status/,http://localhost:8085/nginx_status/,g" /etc/datadog-agent/conf.d/nginx.d/conf.yaml
+fi
 ## Start the Agent ##
 sudo systemctl restart datadog-agent.service
