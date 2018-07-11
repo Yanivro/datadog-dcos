@@ -1,4 +1,5 @@
 #!/bin/bash
+
 DD_API_KEY=$1
 ENV_TAG=$2
 HOST_IP=$(ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ {print $1}' | cut -d"/" -f1)
@@ -58,4 +59,4 @@ if [ $? -eq 0 ]; then
 fi
 
 ## Start the Agent ##
-sudo systemctl restart datadog-agent.servic
+sudo systemctl restart datadog-agent.service
