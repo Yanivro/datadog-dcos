@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DD_API_KEY=$1
 ENV_TAG=$2
 HOST_IP=$(ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/ {print $1}' | cut -d"/" -f1)
@@ -28,6 +30,7 @@ ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-
 if [ $? -eq 0 ]; then
     echo "General slave host agent detected"
     sudo cp /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml.example /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml -p
+    sudo sed -i "s/localhost/$HOST_IP/g" /etc/datadog-agent/conf.d/mesos_slave.d/conf.yaml
     sudo sed -i "s/#   - role:database/   - role:mesos-slave/g" /etc/datadog-agent/datadog.yaml
 fi
 
