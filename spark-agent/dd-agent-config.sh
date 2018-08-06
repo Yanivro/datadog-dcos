@@ -6,7 +6,11 @@ HOST_IP=$(ip a sh | awk '/eth/ {print $2}' | awk '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]
 echo "Running on: "$HOST_IP
 echo "Updating datadog.conf on $(hostname -f)"
 #Upgrade datadog agent
-DD_UPGRADE=true bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
+until DD_UPGRADE=true bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent/master/cmd/agent/install_script.sh)"
+do
+ echo "Try again"
+ sleep 2
+done
 
 ## For All DD Agents ##
 ## Copy the example config into place and plug in your API key () ##
